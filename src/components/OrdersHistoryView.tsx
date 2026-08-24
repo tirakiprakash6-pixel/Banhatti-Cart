@@ -66,15 +66,10 @@ export const OrdersHistoryView: React.FC<OrdersHistoryViewProps> = ({
 
   return (
     <div className="max-w-xl mx-auto px-2 sm:px-4 py-2 space-y-4">
-      {/* Header bar with summary count and quick shopping button */}
+      {/* Header bar without numbers and quick shopping button */}
       <div className="bg-white rounded-2xl border border-gray-200/80 p-4 shadow-2xs flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold text-gray-900">Your Orders</h2>
-            <span className="text-xs font-semibold bg-gray-100 text-gray-700 px-2.5 py-0.5 rounded-full">
-              {orders.length} {orders.length === 1 ? 'Order' : 'Orders'}
-            </span>
-          </div>
+          <h2 className="text-base font-bold text-gray-900">Your Orders</h2>
           <p className="text-xs text-gray-500 mt-0.5">click done after delivery</p>
         </div>
 

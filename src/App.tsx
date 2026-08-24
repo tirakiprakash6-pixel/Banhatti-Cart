@@ -456,11 +456,6 @@ export default function App() {
           >
             <div className="relative">
               <PackageCheck className="w-5 h-5 mb-0.5" />
-              {userOrders.length > 0 && (
-                <span className="absolute -top-1 -right-2 bg-orange-500 text-white text-[9px] font-bold min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center border-2 border-white">
-                  {userOrders.length}
-                </span>
-              )}
             </div>
             <span className="text-[11px] leading-tight">Orders</span>
           </button>
