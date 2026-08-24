@@ -93,7 +93,10 @@ export function getWhatsAppUrl(phone?: string, message?: string): string {
 
 export function openWhatsAppDirectly(url: string): void {
   try {
-    const newTab = window.open(url, '_blank');
+    const newTab = window.open(url, '_blank', 'noopener,noreferrer');
+    if (newTab) {
+      newTab.opener = null;
+    }
     if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
       // If popup blocker intervened, navigate top or current window
       window.location.href = url;
