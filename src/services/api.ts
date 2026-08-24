@@ -14,19 +14,19 @@ export const OWNER_PHONE_NUMBER = '+917899342585';
 export const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyH0dSF7Eul9lmQZd_RdrQFGBdFbb2O_wiVF5n84Ez-lalxJItQRVn_TuPyi2sIQ8_1/exec';
 export const DEFAULT_PRODUCTS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzciBm0UN2XDSMOmsWKugzc7z7DKbSHW3dyD4sJkyo3v2Hz_3BUbY-bm0l130pD5I02Aw/exec';
 
-export function loadCachedProducts(): Product[] | null {
+export function loadCachedProducts(): Product[] {
   try {
     const saved = localStorage.getItem(STORAGE_KEYS.SYNCED_PRODUCTS);
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (Array.isArray(parsed)) {
+      if (Array.isArray(parsed) && parsed.length > 0) {
         return parsed;
       }
     }
   } catch (e) {
     console.error('Failed to read cached products', e);
   }
-  return null;
+  return INITIAL_PRODUCTS;
 }
 
 export function saveCachedProducts(products: Product[]): void {

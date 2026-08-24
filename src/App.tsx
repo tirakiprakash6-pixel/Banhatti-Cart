@@ -8,7 +8,8 @@ import {
 } from './types';
 import { 
   CATEGORIES, 
-  DEFAULT_SETTINGS 
+  DEFAULT_SETTINGS,
+  INITIAL_PRODUCTS
 } from './data/defaultData';
 import { 
   loadSettings, 
@@ -34,7 +35,8 @@ import { Search, ShoppingBag, AlertCircle, Sparkles, Filter, Home, PackageCheck,
 export default function App() {
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
   const [products, setProducts] = useState<Product[]>(() => {
-    return loadCachedProducts() || [];
+    const cached = loadCachedProducts();
+    return (cached && cached.length > 0) ? cached : INITIAL_PRODUCTS;
   });
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [syncMessage, setSyncMessage] = useState<string | null>(null);
