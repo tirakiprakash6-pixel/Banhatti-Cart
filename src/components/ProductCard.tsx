@@ -106,34 +106,57 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </span>
           </div>
 
-          {/* Dual Action Buttons: Add to Cart AND Order Button */}
+          {/* Dual Action Buttons: Add to Cart (with interactive + / - controls) AND Order Button */}
           <div className="flex items-center gap-1.5">
-            {/* 1. Add to Cart Button */}
-            <button
-              id={`add-cart-btn-${product.id}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                onAddToCart(product);
-              }}
-              className={`flex items-center gap-1 px-2.5 py-1.5 font-semibold text-xs rounded-xl transition-all active:scale-95 whitespace-nowrap cursor-pointer ${
-                quantityInCart > 0
-                  ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80'
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
-              }`}
-              title="Add item to Cart"
-            >
-              {quantityInCart > 0 ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Added to Cart</span>
-                </>
-              ) : (
-                <>
-                  <Plus className="w-3.5 h-3.5" />
-                  <span>Add to Cart</span>
-                </>
-              )}
-            </button>
+            {/* 1. Add to Cart / Quantity Stepper Control */}
+            {quantityInCart === 0 ? (
+              <button
+                id={`add-cart-btn-${product.id}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAddToCart(product);
+                }}
+                className="flex items-center gap-1 px-2.5 py-1.5 bg-[#F0EFEB] hover:bg-[#E4E2DC] active:bg-[#DCDAD2] text-[#1A1A1A] font-bold text-xs rounded-xl border border-[#D5D3CC] transition-all active:scale-95 whitespace-nowrap cursor-pointer shadow-2xs"
+                title="Add to Cart"
+              >
+                <Plus className="w-3.5 h-3.5 text-[#1A1A1A]" />
+                <span>Add</span>
+              </button>
+            ) : (
+              <div
+                id={`cart-stepper-${product.id}`}
+                className="flex items-center bg-[#F0EFEB] border border-[#D5D3CC] rounded-xl p-0.5 shadow-2xs"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  id={`cart-minus-btn-${product.id}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onUpdateQuantity(product.id, quantityInCart - 1);
+                  }}
+                  className="w-6 h-6 rounded-lg bg-white hover:bg-gray-100 active:bg-gray-200 text-[#1A1A1A] flex items-center justify-center font-bold transition-all shadow-2xs cursor-pointer"
+                  title="Reduce quantity in cart"
+                  aria-label="Reduce quantity"
+                >
+                  <Minus className="w-3 h-3" />
+                </button>
+                <span className="px-1.5 text-xs font-bold text-[#1A1A1A] min-w-[20px] text-center">
+                  {quantityInCart}
+                </span>
+                <button
+                  id={`cart-plus-btn-${product.id}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onUpdateQuantity(product.id, quantityInCart + 1);
+                  }}
+                  className="w-6 h-6 rounded-lg bg-white hover:bg-gray-100 active:bg-gray-200 text-[#1A1A1A] flex items-center justify-center font-bold transition-all shadow-2xs cursor-pointer"
+                  title="Add more quantity in cart"
+                  aria-label="Increase quantity"
+                >
+                  <Plus className="w-3 h-3" />
+                </button>
+              </div>
+            )}
 
             {/* 2. Direct Order Button */}
             <button
@@ -141,12 +164,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               onClick={(e) => {
                 e.stopPropagation();
                 if (onDirectOrder) {
-                  onDirectOrder(product);
+                  onDirectOrder(product, quantityInCart > 0 ? quantityInCart : 1);
                 } else {
                   onAddToCart(product);
                 }
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-bold text-xs rounded-xl shadow-xs transition-transform active:scale-95 whitespace-nowrap cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#FF6B35] hover:bg-[#E85D2A] active:bg-[#D94F1C] text-white font-bold text-xs rounded-xl shadow-xs transition-transform active:scale-95 whitespace-nowrap cursor-pointer"
               title="Order this product directly"
             >
               <ShoppingBag className="w-3.5 h-3.5" />

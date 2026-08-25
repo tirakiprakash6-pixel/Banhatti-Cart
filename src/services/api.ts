@@ -20,7 +20,23 @@ export function loadCachedProducts(): Product[] {
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        // Sanitize any legacy cached products that had cross-polluted dummy images
+        const sanitized = parsed.map((p: any) => {
+          let imgs: string[] = [];
+          if (Array.isArray(p.images) && p.images.length > 0) {
+            imgs = p.images;
+          } else if (p.image) {
+            imgs = [p.image];
+          } else if (p.imageUrl) {
+            imgs = [p.imageUrl];
+          }
+          imgs = Array.from(new Set(imgs.filter((u) => typeof u === 'string' && u.trim().length > 0)));
+          return {
+            ...p,
+            images: imgs.length > 0 ? imgs : ['https://images.unsplash.com/photo-1542838132-92c53300491e?w=500']
+          };
+        });
+        return sanitized;
       }
     }
   } catch (e) {
@@ -151,10 +167,27 @@ export async function fetchProductsFromScript(
           category = rawCategory;
         }
 
-        const img = item.image || item.imageUrl || item.img || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=500';
-        const imgList = Array.isArray(item.images) && item.images.length > 0 
-          ? item.images 
-          : [img];
+        const rawImgs: string[] = [];
+        if (Array.isArray(item.images) && item.images.length > 0) {
+          rawImgs.push(...item.images);
+        } else if (typeof item.images === 'string' && item.images.trim().length > 0) {
+          rawImgs.push(...item.images.split(',').map((s: string) => s.trim()));
+        }
+        if (item.image) rawImgs.push(String(item.image).trim());
+        if (item.imageUrl) rawImgs.push(String(item.imageUrl).trim());
+        if (item.img) rawImgs.push(String(item.img).trim());
+        // Support columns Image 1, Image 2, Image 3, Image 4 if present in flat sheet objects
+        if (item.image1) rawImgs.push(String(item.image1).trim());
+        if (item.image2) rawImgs.push(String(item.image2).trim());
+        if (item.image3) rawImgs.push(String(item.image3).trim());
+        if (item.image4) rawImgs.push(String(item.image4).trim());
+
+        const imgList = Array.from(
+          new Set(rawImgs.filter((u) => typeof u === 'string' && u.startsWith('http')))
+        );
+        if (imgList.length === 0) {
+          imgList.push('https://images.unsplash.com/photo-1542838132-92c53300491e?w=500');
+        }
 
         return {
           id: String(item.id || `P-${idx + 1}`),
