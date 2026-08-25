@@ -266,83 +266,6 @@ export async function submitOrderToScript(
   }
 }
 
-export interface GeolocationResult {
-  latitude: number;
-  longitude: number;
-  accuracy: number;
-  mapsUrl: string;
-  landmarkName?: string;
-}
-
-export const BANHATTI_LANDMARKS = [
-  { name: 'Kalmeshwar Temple / Main Bazaar', area: 'Kalmeshwar Temple Area', lat: 16.4760, lng: 75.1245 },
-  { name: 'Somwar Peth / Gandhi Chowk', area: 'Somwar Peth', lat: 16.4728, lng: 75.1215 },
-  { name: 'Govt Hospital / Mahalingpur Road', area: 'Govt Hospital Road', lat: 16.4710, lng: 75.1380 },
-  { name: 'KSRTC Bus Stand / Main Road', area: 'KSRTC Bus Stand Area', lat: 16.4782, lng: 75.1205 },
-  { name: 'Rabkavi Main Road / Bridge', area: 'Rabkavi Bridge Area', lat: 16.4850, lng: 75.1150 },
-  { name: 'Vidyanagar / Rampur Area', area: 'Vidyanagar', lat: 16.4680, lng: 75.1300 },
-  { name: 'Tamadaddi / Halyal Road', area: 'Tamadaddi Road', lat: 16.4820, lng: 75.1340 },
-  { name: 'Court / Post Office Road', area: 'Court & Post Office Road', lat: 16.4746, lng: 75.1228 },
-  { name: 'Nehru Market / Cloth Market', area: 'Nehru Market', lat: 16.4755, lng: 75.1232 },
-  { name: 'Basaveshwar Circle / Bypass', area: 'Basaveshwar Circle', lat: 16.4795, lng: 75.1280 }
-];
-
-export function getNearestBanhattiLandmark(lat: number, lng: number): string | null {
-  let closest: { name: string; dist: number } | null = null;
-  for (const lm of BANHATTI_LANDMARKS) {
-    const dLat = (lm.lat - lat) * 111;
-    const dLng = (lm.lng - lng) * 111 * Math.cos(lat * (Math.PI / 180));
-    const distKm = Math.sqrt(dLat * dLat + dLng * dLng);
-    if (!closest || distKm < closest.dist) {
-      closest = { name: lm.area, dist: distKm };
-    }
-  }
-  // If within 10km of Banhatti, label with nearest local area
-  if (closest && closest.dist <= 10) {
-    return `${closest.name}, Banhatti`;
-  }
-  return null;
-}
-
-export function getCurrentLocation(): Promise<GeolocationResult> {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject(new Error('Geolocation is not supported by your browser. Please choose your area below.'));
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude, accuracy } = position.coords;
-        const nearest = getNearestBanhattiLandmark(latitude, longitude);
-        resolve({
-          latitude,
-          longitude,
-          accuracy,
-          mapsUrl: `https://maps.google.com/?q=${latitude.toFixed(6)},${longitude.toFixed(6)}`,
-          landmarkName: nearest || undefined
-        });
-      },
-      (error) => {
-        let msg = 'Unable to get GPS location.';
-        if (error.code === error.PERMISSION_DENIED) {
-          msg = 'Location access is not allowed by your browser. Please select your Banhatti area below.';
-        } else if (error.code === error.POSITION_UNAVAILABLE) {
-          msg = 'GPS signal unavailable. Please select your area below.';
-        } else if (error.code === error.TIMEOUT) {
-          msg = 'GPS request timed out. Please select your area below.';
-        }
-        reject(new Error(msg));
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 60000
-      }
-    );
-  });
-}
-
 export function generateOrderId(): string {
   const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
   let rand = '';
@@ -350,4 +273,25 @@ export function generateOrderId(): string {
     rand += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return `BC-${rand}`;
+}
+
+export function cleanMobileNumber(phone: string): string {
+  // Remove all non-digits
+  let cleaned = phone.replace(/\D/g, '');
+  // If user pasted 91XXXXXXXXXX (12 digits), strip country code 91
+  if (cleaned.length === 12 && cleaned.startsWith('91')) {
+    cleaned = cleaned.slice(2);
+  }
+  // If user typed 0XXXXXXXXXX (11 digits with leading 0), strip 0
+  if (cleaned.length === 11 && cleaned.startsWith('0')) {
+    cleaned = cleaned.slice(1);
+  }
+  // Strictly clamp to maximum 10 digits
+  return cleaned.slice(0, 10);
+}
+
+export function validateIndianMobile(phone: string): boolean {
+  const cleaned = cleanMobileNumber(phone);
+  // Valid Indian mobile number is exactly 10 digits starting with 6, 7, 8, or 9
+  return /^[6-9]\d{9}$/.test(cleaned);
 }

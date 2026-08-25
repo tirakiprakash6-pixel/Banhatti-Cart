@@ -108,52 +108,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
           {/* Dual Action Buttons: Add to Cart AND Order Button */}
           <div className="flex items-center gap-1.5">
-            {/* 1. Add to Cart / Quantity Stepper */}
-            {quantityInCart === 0 ? (
-              <button
-                id={`add-cart-btn-${product.id}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onAddToCart(product);
-                }}
-                className="flex items-center gap-1 px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold text-xs rounded-xl transition-transform active:scale-95 whitespace-nowrap cursor-pointer"
-                title="Add item to Cart"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Add</span>
-              </button>
-            ) : (
-              <div 
-                className="flex items-center bg-gray-900 text-white rounded-xl p-0.5 shadow-2xs"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button
-                  id={`minus-btn-${product.id}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onUpdateQuantity(product.id, quantityInCart - 1);
-                  }}
-                  className="w-6 h-6 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
-                  aria-label="Decrease quantity"
-                >
-                  <Minus className="w-3 h-3" />
-                </button>
-                <span className="px-1.5 text-xs font-bold text-orange-400 min-w-[18px] text-center">
-                  {quantityInCart}
-                </span>
-                <button
-                  id={`plus-btn-${product.id}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onUpdateQuantity(product.id, quantityInCart + 1);
-                  }}
-                  className="w-6 h-6 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
-                  aria-label="Increase quantity"
-                >
-                  <Plus className="w-3 h-3" />
-                </button>
-              </div>
-            )}
+            {/* 1. Add to Cart Button */}
+            <button
+              id={`add-cart-btn-${product.id}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddToCart(product);
+              }}
+              className={`flex items-center gap-1 px-2.5 py-1.5 font-semibold text-xs rounded-xl transition-all active:scale-95 whitespace-nowrap cursor-pointer ${
+                quantityInCart > 0
+                  ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+              }`}
+              title="Add item to Cart"
+            >
+              {quantityInCart > 0 ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Added to Cart</span>
+                </>
+              ) : (
+                <>
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Add to Cart</span>
+                </>
+              )}
+            </button>
 
             {/* 2. Direct Order Button */}
             <button

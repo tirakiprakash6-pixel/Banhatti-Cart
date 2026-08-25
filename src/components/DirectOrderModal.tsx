@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, ShoppingBag, AlertCircle, Plus, Minus } from 'lucide-react';
 import { Product, AppSettings, OrderPayload } from '../types';
-import { generateOrderId, submitOrderToScript, saveCustomerInfo, loadCustomerInfo } from '../services/api';
+import { generateOrderId, submitOrderToScript, saveCustomerInfo, loadCustomerInfo, validateIndianMobile, cleanMobileNumber } from '../services/api';
 import { formatWhatsAppMessage, getWhatsAppUrl, openWhatsAppDirectly, OWNER_WHATSAPP_TARGET } from '../utils/whatsapp';
 
 interface DirectOrderModalProps {
@@ -58,9 +58,9 @@ export const DirectOrderModal: React.FC<DirectOrderModalProps> = ({
       return;
     }
 
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
-    if (!cleanPhone || cleanPhone.length < 10) {
-      setValidationError('Please enter a valid 10-digit mobile number so we can call you.');
+    const cleanPhone = cleanMobileNumber(phone);
+    if (!validateIndianMobile(cleanPhone)) {
+      setValidationError('Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.');
       return;
     }
 

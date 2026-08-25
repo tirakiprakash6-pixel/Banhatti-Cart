@@ -39,7 +39,6 @@ export default function App() {
     return (cached && cached.length > 0) ? cached : INITIAL_PRODUCTS;
   });
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
-  const [syncMessage, setSyncMessage] = useState<string | null>(null);
 
   // Active Main Navigation Tab ('home' | 'orders')
   const [currentTab, setCurrentTab] = useState<'home' | 'orders'>('home');
@@ -133,25 +132,20 @@ export default function App() {
     );
   }, [searchQuery, products]);
 
-  // Sync products on mount and when settings change
+  // Sync products on mount and when settings change silently in background
   const refreshProducts = async () => {
     const targetScript = settings.productsScriptUrl || settings.googleScriptUrl;
     if (!targetScript) {
       return;
     }
     setIsSyncing(true);
-    setSyncMessage(null);
     try {
       const res = await fetchProductsFromScript(targetScript);
-      if (res.products) {
+      if (res.products && res.products.length > 0) {
         setProducts(res.products);
       }
-      if (res.error) {
-        setSyncMessage(res.error);
-      }
     } catch (e) {
-      console.error(e);
-      setSyncMessage('Google Sheet sync error');
+      console.warn('Background sync:', e);
     } finally {
       setIsSyncing(false);
     }
@@ -223,16 +217,6 @@ export default function App() {
 
       {/* Main Container */}
       <main className="flex-1 max-w-2xl w-full mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-5 pb-28">
-        {/* Sync notification if applicable */}
-        {syncMessage && (
-          <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 flex items-center justify-between gap-2 shadow-2xs">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-orange-500 shrink-0" />
-              <span>{syncMessage}</span>
-            </div>
-          </div>
-        )}
-
         {currentTab === 'orders' ? (
           /* =========================================================
              ORDERS SECTION: USER'S ORDERED PRODUCTS & STATUS

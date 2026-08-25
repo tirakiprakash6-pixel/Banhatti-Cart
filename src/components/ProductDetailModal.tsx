@@ -225,10 +225,23 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             <button
               id="modal-add-to-cart-btn"
               onClick={handleSaveToCart}
-              className="flex items-center justify-center gap-1.5 py-3 px-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs sm:text-sm rounded-xl transition-all active:scale-95 cursor-pointer"
+              className={`flex items-center justify-center gap-1.5 py-3 px-3 font-bold text-xs sm:text-sm rounded-xl transition-all active:scale-95 cursor-pointer ${
+                quantityInCart > 0
+                  ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+              }`}
             >
-              <Plus className="w-4 h-4" />
-              <span>{quantityInCart > 0 ? 'Update Cart' : 'Add to Cart'}</span>
+              {quantityInCart > 0 ? (
+                <>
+                  <Check className="w-4 h-4 text-emerald-600" />
+                  <span>Added to Cart</span>
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4" />
+                  <span>Add to Cart</span>
+                </>
+              )}
             </button>
 
             {/* 2. Direct Order Button */}

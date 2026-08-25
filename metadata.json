@@ -1,6 +1,6 @@
 {
   "name": "Banhatti Cart",
   "description": "Mobile-first local concierge delivery MVP connecting local Banhatti shops to customers via WhatsApp and Google Sheets backend.",
-  "requestFramePermissions": ["geolocation"],
+  "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

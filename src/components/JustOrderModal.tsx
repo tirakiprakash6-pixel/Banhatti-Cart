@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, AlertCircle, Send } from 'lucide-react';
 import { AppSettings, OrderPayload } from '../types';
-import { generateOrderId, submitOrderToScript, saveCustomerInfo } from '../services/api';
+import { generateOrderId, submitOrderToScript, saveCustomerInfo, validateIndianMobile, cleanMobileNumber } from '../services/api';
 import { formatWhatsAppMessage, getWhatsAppUrl, openWhatsAppDirectly, OWNER_WHATSAPP_TARGET } from '../utils/whatsapp';
 
 interface JustOrderModalProps {
@@ -56,9 +56,9 @@ export const JustOrderModal: React.FC<JustOrderModalProps> = ({
       setValidationError('Please enter your Name');
       return;
     }
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
-    if (!cleanPhone || cleanPhone.length < 10) {
-      setValidationError('Please enter a valid 10-digit mobile number so we can call you');
+    const cleanPhone = cleanMobileNumber(phone);
+    if (!validateIndianMobile(cleanPhone)) {
+      setValidationError('Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.');
       return;
     }
 
@@ -148,7 +148,7 @@ export const JustOrderModal: React.FC<JustOrderModalProps> = ({
                 Just Order
               </h3>
               <p className="text-xs text-gray-400 font-normal">
-                Personal concierge for any shop in Banhatti
+                Custom order
               </p>
             </div>
           </div>
@@ -166,7 +166,7 @@ export const JustOrderModal: React.FC<JustOrderModalProps> = ({
         <div className="bg-orange-50/70 border-b border-orange-100/80 px-5 py-2.5 flex items-center gap-2 text-xs text-orange-900">
           <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0"></span>
           <p className="leading-tight">
-            We buy fresh from your requested shop and deliver to you. Pay via Cash or UPI.
+            Write your order manually
           </p>
         </div>
 
@@ -214,17 +214,28 @@ export const JustOrderModal: React.FC<JustOrderModalProps> = ({
 
             <div>
               <label htmlFor="just-order-phone" className="block text-xs font-semibold text-gray-700 mb-1">
-                Mobile Number <span className="text-orange-500">*</span>
+                Mobile Number <span className="text-orange-500">*</span> <span className="text-gray-400 font-normal">(10 digits)</span>
               </label>
-              <input
-                id="just-order-phone"
-                type="tel"
-                required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="10-digit mobile number"
-                className="w-full text-xs sm:text-sm px-3 py-2 rounded-lg border border-gray-200 bg-white focus:border-gray-900 focus:ring-1 focus:ring-gray-900 outline-none text-gray-900 placeholder:text-gray-400"
-              />
+              <div className="relative flex items-center">
+                <span className="absolute left-3 text-xs font-semibold text-gray-500 pointer-events-none select-none">
+                  +91
+                </span>
+                <input
+                  id="just-order-phone"
+                  type="tel"
+                  inputMode="numeric"
+                  pattern="[6-9][0-9]{9}"
+                  maxLength={10}
+                  required
+                  value={phone}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '');
+                    setPhone(val.slice(0, 10));
+                  }}
+                  placeholder="9876543210"
+                  className="w-full text-xs sm:text-sm pl-12 pr-3 py-2 rounded-lg border border-gray-200 bg-white focus:border-gray-900 focus:ring-1 focus:ring-gray-900 outline-none text-gray-900 placeholder:text-gray-400 font-medium tracking-wide"
+                />
+              </div>
             </div>
           </div>
 
