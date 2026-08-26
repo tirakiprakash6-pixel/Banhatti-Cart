@@ -58,11 +58,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     setActiveImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
-  const handleOrderNow = () => {
+  const handleOrderNow = (e?: React.MouseEvent) => {
+    if (e) {
+      e.stopPropagation();
+    }
     if (onDirectOrder) {
       onDirectOrder(product, 1);
     }
-    onClose();
   };
 
   return (

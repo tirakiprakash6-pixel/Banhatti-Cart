@@ -269,7 +269,10 @@ export async function submitOrderToScript(
     date: dateStr,
     time: timeStr,
     timestamp: now.toISOString(),
-    status: order.status || 'NEW_ORDER'
+    status: order.status || 'NEW_ORDER',
+    end: 'no',
+    End: 'no',
+    isEnd: 'no'
   };
 
   try {
@@ -295,6 +298,68 @@ export async function submitOrderToScript(
       success: true,
       message: 'Order ready! Completing via WhatsApp.',
       orderId: order.orderId
+    };
+  }
+}
+
+export async function updateOrderEndStatusInScript(
+  orderId: string,
+  endValue: string = 'yes',
+  scriptUrl?: string
+): Promise<{ success: boolean; message: string }> {
+  const targetUrl = (scriptUrl && scriptUrl.trim().length > 0) ? scriptUrl.trim() : DEFAULT_SCRIPT_URL;
+
+  if (!targetUrl || !targetUrl.startsWith('https://script.google.com')) {
+    return { success: true, message: 'Local status updated' };
+  }
+
+  const now = new Date();
+  const payload = {
+    action: 'updateEndStatus',
+    orderId: orderId,
+    end: endValue,
+    End: endValue,
+    END: endValue,
+    isEnd: endValue,
+    status: 'DELIVERED',
+    completedAt: now.toISOString()
+  };
+
+  try {
+    // 1. Primary: POST request
+    await fetch(targetUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      cache: 'no-cache',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8',
+      },
+      body: JSON.stringify(payload)
+    });
+
+    // 2. Secondary fallback: GET request with parameters in case Google Apps Script uses doGet
+    try {
+      const getUrl = new URL(targetUrl);
+      getUrl.searchParams.set('action', 'updateEndStatus');
+      getUrl.searchParams.set('orderId', orderId);
+      getUrl.searchParams.set('end', endValue);
+      getUrl.searchParams.set('End', endValue);
+      getUrl.searchParams.set('status', 'DELIVERED');
+      getUrl.searchParams.set('t', Date.now().toString());
+      fetch(getUrl.toString(), { method: 'GET', mode: 'no-cors' }).catch(() => {});
+    } catch {
+      // Ignore URL parse error
+    }
+
+    return {
+      success: true,
+      message: `Order ${orderId} marked End: ${endValue} in Google Sheet`
+    };
+  } catch (err) {
+    console.error('Failed to update End status in Google Sheet:', err);
+    return {
+      success: false,
+      message: 'Failed to update Google Sheet'
     };
   }
 }

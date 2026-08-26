@@ -93,15 +93,31 @@ export function getWhatsAppUrl(phone?: string, message?: string): string {
 
 export function openWhatsAppDirectly(url: string): void {
   try {
+    // 1. Try window.open in a new tab
     const newTab = window.open(url, '_blank', 'noopener,noreferrer');
     if (newTab) {
       newTab.opener = null;
-    }
-    if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
-      // If popup blocker intervened, navigate top or current window
-      window.location.href = url;
+      return;
     }
   } catch (e) {
-    window.location.href = url;
+    // Fallthrough to link click
+  }
+
+  try {
+    // 2. Fallback: Create and click an invisible target="_blank" anchor tag
+    // This safely opens external links in a new window/app tab without destroying the current iframe or page
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => {
+      if (document.body.contains(link)) {
+        document.body.removeChild(link);
+      }
+    }, 100);
+  } catch (e) {
+    console.warn('Could not auto-open WhatsApp link:', e);
   }
 }

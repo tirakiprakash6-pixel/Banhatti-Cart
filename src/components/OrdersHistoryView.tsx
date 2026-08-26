@@ -6,7 +6,8 @@ import {
   Search, 
   Store, 
   Check, 
-  ChevronRight 
+  ChevronRight,
+  Loader2
 } from 'lucide-react';
 import { OrderPayload } from '../types';
 
@@ -22,11 +23,16 @@ export const OrdersHistoryView: React.FC<OrdersHistoryViewProps> = ({
   onUpdateOrderStatus 
 }) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
 
   const handleMarkDone = (orderId: string) => {
+    setUpdatingOrderId(orderId);
     if (onUpdateOrderStatus) {
       onUpdateOrderStatus(orderId, 'DELIVERED');
     }
+    setTimeout(() => {
+      setUpdatingOrderId(null);
+    }, 800);
   };
 
   const filteredOrders = orders.filter(order => {
@@ -258,17 +264,27 @@ export const OrdersHistoryView: React.FC<OrdersHistoryViewProps> = ({
                   {isCompleted ? (
                     <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200">
                       <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                      <span>Order Completed</span>
+                      <span>Order Completed (End: Yes)</span>
                     </div>
                   ) : (
                     <button
                       type="button"
+                      disabled={updatingOrderId === order.orderId}
                       onClick={() => handleMarkDone(order.orderId)}
-                      className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-bold rounded-lg shadow-xs shadow-emerald-600/20 transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
-                      title="Click to complete the order loading animation"
+                      className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:opacity-80 text-white text-xs font-bold rounded-lg shadow-xs shadow-emerald-600/20 transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+                      title="Click to complete delivery and update Google Sheet End column"
                     >
-                      <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                      <span>DONE</span>
+                      {updatingOrderId === order.orderId ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Saving...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                          <span>DONE</span>
+                        </>
+                      )}
                     </button>
                   )}
                 </div>

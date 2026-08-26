@@ -15,7 +15,8 @@ import {
   loadSettings, 
   saveSettings, 
   fetchProductsFromScript,
-  loadCachedProducts
+  loadCachedProducts,
+  updateOrderEndStatusInScript
 } from './services/api';
 import { Header } from './components/Header';
 import { CategorySection } from './components/CategorySection';
@@ -229,6 +230,9 @@ export default function App() {
                   ord.orderId === orderId ? { ...ord, status: newStatus } : ord
                 )
               );
+              // Trigger sync to Google Sheet so the 'End' column is marked 'yes'
+              const endVal = newStatus === 'DELIVERED' ? 'yes' : 'no';
+              updateOrderEndStatusInScript(orderId, endVal, settings.googleScriptUrl);
             }}
             onStartShopping={() => {
               setCurrentTab('home');
