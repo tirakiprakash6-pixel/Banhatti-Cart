@@ -155,15 +155,18 @@ export const JustOrderInlineSection: React.FC<JustOrderInlineSectionProps> = ({
             required
             value={requestText}
             onChange={(e) => setRequestText(e.target.value)}
+            onFocus={(e) => {
+              setTimeout(() => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 280);
+            }}
             placeholder="e.g. 2 kg Sona Masoori Rice, Masala Dosa from Hotel Udupi, and Sweets from Gurunath."
-            className="w-full text-xs sm:text-sm p-3 rounded-lg border border-gray-200 bg-white focus:border-gray-900 focus:ring-1 focus:ring-gray-900 outline-none placeholder:text-gray-400 text-gray-900 transition-all resize-none"
+            className="w-full text-base sm:text-sm p-3.5 rounded-xl border border-gray-200 bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none placeholder:text-gray-400 text-gray-900 transition-all resize-none"
           />
         </div>
 
         {/* 2. Customer Name & Phone */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label htmlFor="inline-customer-name" className="block text-xs font-semibold text-gray-700 mb-1">
+            <label htmlFor="inline-customer-name" className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
               Your Name <span className="text-orange-500">*</span>
             </label>
             <input
@@ -172,17 +175,20 @@ export const JustOrderInlineSection: React.FC<JustOrderInlineSectionProps> = ({
               required
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
+              onFocus={(e) => {
+                setTimeout(() => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 280);
+              }}
               placeholder="e.g. Ramesh Kulkarni"
-              className="w-full text-xs sm:text-sm px-3 py-2 rounded-lg border border-gray-200 bg-white focus:border-gray-900 focus:ring-1 focus:ring-gray-900 outline-none text-gray-900 placeholder:text-gray-400"
+              className="w-full text-base sm:text-sm px-3.5 py-3 rounded-xl border border-gray-200 bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none text-gray-900 placeholder:text-gray-400"
             />
           </div>
 
           <div>
-            <label htmlFor="inline-customer-phone" className="block text-xs font-semibold text-gray-700 mb-1">
-              Mobile Number <span className="text-orange-500">*</span> <span className="text-gray-400 font-normal">(10 digits)</span>
+            <label htmlFor="inline-customer-phone" className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Mobile Number <span className="text-orange-500">*</span> <span className="text-gray-400 font-normal lowercase">(10 digits)</span>
             </label>
             <div className="relative flex items-center">
-              <span className="absolute left-3 text-xs font-semibold text-gray-500 pointer-events-none select-none">
+              <span className="absolute left-3.5 text-sm font-semibold text-gray-400 pointer-events-none select-none">
                 +91
               </span>
               <input
@@ -197,8 +203,11 @@ export const JustOrderInlineSection: React.FC<JustOrderInlineSectionProps> = ({
                   const val = e.target.value.replace(/\D/g, '');
                   setPhone(val.slice(0, 10));
                 }}
-                placeholder="9876543210"
-                className="w-full text-xs sm:text-sm pl-12 pr-3 py-2 rounded-lg border border-gray-200 bg-white focus:border-gray-900 focus:ring-1 focus:ring-gray-900 outline-none text-gray-900 placeholder:text-gray-400 font-medium tracking-wide"
+                onFocus={(e) => {
+                  setTimeout(() => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 280);
+                }}
+                placeholder="8988846666"
+                className="w-full text-base sm:text-sm pl-12 pr-3.5 py-3 rounded-xl border border-gray-200 bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none text-gray-900 placeholder:text-gray-400 font-mono font-medium tracking-wide"
               />
             </div>
           </div>
@@ -206,8 +215,8 @@ export const JustOrderInlineSection: React.FC<JustOrderInlineSectionProps> = ({
 
         {/* 3. Address */}
         <div>
-          <label htmlFor="inline-customer-location" className="block text-xs font-semibold text-gray-700 mb-1">
-            Delivery Address / Landmark <span className="text-gray-400 font-normal">(Optional)</span>
+          <label htmlFor="inline-customer-location" className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+            Delivery Address / Landmark <span className="text-gray-400 font-normal lowercase">(optional)</span>
           </label>
 
           <input
@@ -215,8 +224,11 @@ export const JustOrderInlineSection: React.FC<JustOrderInlineSectionProps> = ({
             type="text"
             value={locationText}
             onChange={(e) => setLocationText(e.target.value)}
+            onFocus={(e) => {
+              setTimeout(() => e.target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 280);
+            }}
             placeholder="e.g. Near Kalmeshwar Temple, Somwar Peth, Banhatti"
-            className="w-full text-xs sm:text-sm px-3 py-2 rounded-lg border border-gray-200 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 outline-none bg-white text-gray-900 placeholder:text-gray-400"
+            className="w-full text-base sm:text-sm px-3.5 py-3 rounded-xl border border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 outline-none bg-white text-gray-900 placeholder:text-gray-400"
           />
         </div>
 

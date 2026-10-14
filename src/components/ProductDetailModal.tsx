@@ -70,12 +70,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   return (
     <div
       id="product-detail-modal-overlay"
-      className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn"
+      className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-hidden animate-fadeIn"
       onClick={onClose}
     >
       <div
         id="product-detail-modal-content"
-        className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-200 relative my-auto animate-scaleUp"
+        className="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full flex flex-col max-h-[92dvh] sm:max-h-[90vh] overflow-hidden shadow-2xl border border-slate-200 relative animate-in fade-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -164,29 +164,29 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         )}
 
         {/* Details & Action Body */}
-        <div className="p-4 sm:p-6 bg-[#FDFCFB]">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 bg-[#FDFCFB] space-y-3.5">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-[#1A1A1A] bg-[#F7F6F2] border border-[#E7E5E0] px-2.5 py-1 rounded-md w-fit">
               <span>{product.category}</span>
             </div>
           </div>
 
-          <h3 className="text-xl sm:text-2xl font-serif italic text-[#1A1A1A] mt-2 leading-snug">
+          <h3 className="text-xl sm:text-2xl font-serif italic text-[#1A1A1A] mt-1 leading-snug">
             {product.name}
           </h3>
 
           {product.unit && (
-            <p className="text-[11px] uppercase tracking-wider font-semibold text-[#8C8A84] mt-0.5">
+            <p className="text-[11px] uppercase tracking-wider font-semibold text-[#8C8A84]">
               Portion: {product.unit}
             </p>
           )}
 
-          <p className="text-xs sm:text-sm text-[#666663] mt-3 leading-relaxed bg-[#F7F6F2] p-3.5 rounded-2xl border border-[#E7E5E0]">
+          <p className="text-xs sm:text-sm text-[#666663] leading-relaxed bg-[#F7F6F2] p-3.5 rounded-2xl border border-[#E7E5E0]">
             {product.description}
           </p>
 
           {/* Pricing Row */}
-          <div className="mt-4 flex items-center justify-between p-3.5 bg-[#F7F6F2] border border-[#E7E5E0] rounded-2xl">
+          <div className="flex items-center justify-between p-3.5 bg-[#F7F6F2] border border-[#E7E5E0] rounded-2xl">
             <div>
               <span className="text-[10px] uppercase tracking-wider text-[#8C8A84] block font-medium">
                 Estimated Item Price
@@ -205,22 +205,22 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           </div>
 
           {/* Delivery Note */}
-          <p className="text-[11px] text-[#8C8A84] mt-3 text-center">
+          <p className="text-[11px] text-[#8C8A84] text-center pb-2">
             💡 We buy fresh from local Banhatti shops upon call confirmation. Pay cash/UPI upon delivery.
           </p>
+        </div>
 
-          {/* Single Direct Order Button */}
-          <div className="mt-4">
-            <button
-              id="modal-direct-order-btn"
-              type="button"
-              onClick={handleOrderNow}
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-[#FF6B35] hover:bg-[#E85D2A] active:bg-[#D94F1C] text-white font-bold text-sm sm:text-base rounded-2xl shadow-md transition-all active:scale-95 cursor-pointer"
-            >
-              <ShoppingBag className="w-5 h-5" />
-              <span>Order Now</span>
-            </button>
-          </div>
+        {/* Sticky Action Footer */}
+        <div className="p-3.5 sm:p-4 bg-white border-t border-[#E7E5E0] shrink-0">
+          <button
+            id="modal-direct-order-btn"
+            type="button"
+            onClick={handleOrderNow}
+            className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-[#FF6B35] hover:bg-[#E85D2A] active:bg-[#D94F1C] text-white font-bold text-sm sm:text-base rounded-2xl shadow-md shadow-orange-500/20 transition-all active:scale-95 cursor-pointer"
+          >
+            <ShoppingBag className="w-5 h-5" />
+            <span>Order Now ({currencySymbol}{currentPrice})</span>
+          </button>
         </div>
       </div>
     </div>

@@ -23,7 +23,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
     >
       <div
         id="order-success-modal-content"
-        className="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-gray-100 relative my-auto p-6 sm:p-7 text-center animate-in zoom-in-95 duration-150"
+        className="bg-white rounded-3xl max-w-md w-full overflow-y-auto shadow-2xl border border-gray-100 relative my-auto p-5 sm:p-7 text-center animate-in zoom-in-95 duration-150 max-h-[92dvh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Success Icon */}

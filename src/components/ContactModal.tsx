@@ -20,16 +20,16 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   return (
     <div
       id="contact-modal-overlay"
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-hidden"
       onClick={onClose}
     >
       <div
         id="contact-modal-content"
-        className="bg-white rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-gray-100 relative my-auto animate-in zoom-in-95 duration-150"
+        className="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full flex flex-col max-h-[92dvh] sm:max-h-[90vh] overflow-hidden shadow-2xl border border-gray-100 relative animate-in fade-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-5 bg-gray-900 text-white flex items-center justify-between">
+        <div className="p-4 sm:p-5 bg-gray-900 text-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="p-2 bg-orange-500 rounded-xl text-white">
               <Headphones className="w-4 h-4" />
@@ -49,7 +49,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
         </div>
 
         {/* Details */}
-        <div className="p-5 space-y-4 text-xs sm:text-sm">
+        <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 space-y-4 text-xs sm:text-sm">
           <div className="p-3.5 bg-orange-50 rounded-2xl border border-orange-100 text-gray-800 text-xs leading-relaxed">
             Have a question, special delivery request, or need a custom order? Our local delivery team is at your service.
           </div>
